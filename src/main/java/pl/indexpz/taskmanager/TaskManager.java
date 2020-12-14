@@ -30,25 +30,36 @@ public class TaskManager {
 
     //  Czytam z pliku i tworzę tablicę/ Read from file and create array
     private static String[][] getArrayFromFile(String fileLocalisation) {
-        String[][] listArray = new String[4][3];
+        String[][] listArray = new String[0][3];
         Path path = Paths.get(fileLocalisation);
         String[] array = new String[1];
-        int rowCount = 1;
+        int countRow = 0;
+        String str = "";
         if (Files.exists(path)) {
             try {
                 for (String line : Files.readAllLines(path)) {
-                    ArrayUtils.;
-                    listArray[rowCount] = line.split(",");
-                    System.out.println(Arrays.toString(listArray[rowCount]));
-                    rowCount++;
+                    countRow++;
+                    str += line + "\n";
+                    array = line.split(",");
+
                 }
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             System.out.println("File not exist");
         }
+
+        listArray = Arrays.copyOf(listArray, countRow);
+        System.out.println("Liczba wierszy " + listArray.length);
+        for (int i = 0; i < listArray.length; i++) {
+            for (int j = 0; j < listArray[i].length; j++) {
+                listArray[i][j] = array[i];
+            }
+            System.out.println(Arrays.toString(listArray));
+        }
+
 
         return listArray;
     }
