@@ -12,6 +12,9 @@ local.properties
 .loadpath
 .recommenders
 
+#OSX system file
+.DS_Store
+
 # External tool builders
 .externalToolBuilders/
 
