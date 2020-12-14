@@ -27,6 +27,32 @@ public class TaskManager {
         mainLoopOption(choiceOption());
     }
 
+
+    //    Główna pętla z wyborem polecenia / Main loop with choisen option
+    private static void mainLoopOption(String choiceOption) {
+        if (choiceOption.equals(OPTIONS[0])) {
+            System.out.println("Wykonuję add");
+            showOptions();
+            mainLoopOption(choiceOption());
+        } else if (choiceOption.equals(OPTIONS[1])) {
+            System.out.println("Wykonuję remove");
+            showOptions();
+            mainLoopOption(choiceOption());
+        } else if (choiceOption.equals(OPTIONS[2])) {
+            getArrayFromFile(DATABASE_FILE);
+            showOptions();
+            mainLoopOption(choiceOption());
+        } else if (choiceOption.equals(OPTIONS[3])) {
+            System.out.println("Kończę program");
+        } else {
+            System.out.println("Wrong method. Try again:");
+            mainLoopOption(choiceOption());
+
+        }
+
+    }
+
+
     //  Czytam z pliku i tworzę tablicę/ Read from file and create array
     private static String[][] getArrayFromFile(String fileLocalisation) {
         String[][] listArray = new String[1][3];
@@ -70,30 +96,6 @@ public class TaskManager {
         return outArray;
     }
 
-
-    //    Główna pętla z wyborem polecenia / Main loop with choisen option
-    private static void mainLoopOption(String choiceOption) {
-        if (choiceOption.equals(OPTIONS[0])) {
-            System.out.println("Wykonuję add");
-            showOptions();
-            mainLoopOption(choiceOption());
-        } else if (choiceOption.equals(OPTIONS[1])) {
-            System.out.println("Wykonuję remove");
-            showOptions();
-            mainLoopOption(choiceOption());
-        } else if (choiceOption.equals(OPTIONS[2])) {
-            getArrayFromFile(DATABASE_FILE);
-            showOptions();
-            mainLoopOption(choiceOption());
-        } else if (choiceOption.equals(OPTIONS[3])) {
-            System.out.println("Kończę program");
-        } else {
-            System.out.println("Wrong method. Try again:");
-            mainLoopOption(choiceOption());
-
-        }
-
-    }
 
     //    Pozwala wybrać opcję / Choice option
     private static String choiceOption() {
