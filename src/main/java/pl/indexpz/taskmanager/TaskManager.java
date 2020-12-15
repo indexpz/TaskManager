@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,9 +12,9 @@ import static pl.coderslab.ConsoleColors.*;
 
 public class TaskManager {
 
-    private static String[] OPTIONS = {"add", "remove", "list", "exit"};
-    private static String[] INFO_STR = {"Please select an option:"};
-    private static String DATABASE_FILE = "src/main/java/pl/indexpz/taskmanager/tasks.csv";
+    final static String[] OPTIONS = {"add", "remove", "list", "exit"};
+    final static String[] INFO_STR = {"Please select an option:"};
+    final static String DATABASE_FILE = "src/main/java/pl/indexpz/taskmanager/tasks.csv";
     private static String[][] currentTaskList = getArrayFromFile(DATABASE_FILE);
 
     public static void main(String[] args) {
@@ -26,7 +25,6 @@ public class TaskManager {
         showOptions();
         mainLoopOption(insert());
     }
-
 
 
     //  Główna pętla z wyborem polecenia / Main loop with choisen option
@@ -99,19 +97,23 @@ public class TaskManager {
     private static String[][] removeFromArray(String[][] taskList) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the line number to delete task:");
-        while (!scanner.hasNextInt() || scanner.nextInt() < 0 || scanner.nextInt() > taskList.length - 1) {
+        while (!scanner.hasNextInt()) {
             scanner.nextLine();
-            System.out.println("There is no task with this number or the given value is not an integer");
+            System.out.println("There is no task with this number or the given value is not an integer!");
         }
-        int rowNumber = scanner.nextInt();
 
+        int rowNumber = scanner.nextInt();
+        if(rowNumber<0 || rowNumber> taskList.length){
+            System.out.println("There is no task with this number!");
+            return taskList;
+        }
         return removeRow(taskList, rowNumber);
     }
 
     //  Wyświetla listę / Print list
     private static void printTaskList(String[][] taskList) {
         for (int i = 0; i < taskList.length; i++) {
-            System.out.print(i + ": ");
+            System.out.print((i + 1) + ": ");
             for (int j = 0; j < taskList[i].length; j++) {
                 System.out.print(taskList[i][j] + " ");
             }
@@ -158,11 +160,14 @@ public class TaskManager {
 
     //  Usuwa wiersz z tablicy dwuwymiarowej /Removes a row from a two-dimensional array
     public static String[][] removeRow(String[][] taskList, int rowToRemove) {
+        rowToRemove = rowToRemove - 1;
         String[][] realCoppyArray = new String[taskList.length - 1][taskList[0].length];
         for (int row = 0; row < taskList.length; row++) {
             for (int column = 0; column < taskList[0].length; column++) {
-                if (row != rowToRemove) {
+                if (row < rowToRemove) {
                     realCoppyArray[row][column] = taskList[row][column];
+                } else if (row > rowToRemove) {
+                    realCoppyArray[row - 1][column] = taskList[row][column];
                 }
             }
         }
@@ -172,8 +177,7 @@ public class TaskManager {
     //  Pozwala wybrać opcję / Choice option
     private static String insert() {
         Scanner scanner = new Scanner(System.in);
-        String chosenOption = scanner.nextLine();
-        return chosenOption;
+        return scanner.nextLine();
     }
 
     //  Pokazuje opcje do wyboru / Show options to choice
@@ -184,7 +188,5 @@ public class TaskManager {
         System.out.println(RESET + OPTIONS[2]);
         System.out.println(RESET + OPTIONS[3]);
     }
-
-
 
 }

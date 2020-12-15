@@ -1,4 +1,4 @@
-package pl.indexpz.taskmanager;
+package pl.indexpz.taskmanager.test;
 
 public class InsertRow {
     public static void main(String[] args) {
