@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 import static pl.coderslab.ConsoleColors.*;
@@ -26,15 +28,15 @@ public class TaskManager {
     }
 
 
-    //    Główna pętla z wyborem polecenia / Main loop with choisen option
+
+    //  Główna pętla z wyborem polecenia / Main loop with choisen option
     private static void mainLoopOption(String choiceOption) {
         if (choiceOption.equals(OPTIONS[0])) {
-//            addNewTask(currentTaskList);
             currentTaskList = addNewTask(currentTaskList);
             showOptions();
             mainLoopOption(insert());
         } else if (choiceOption.equals(OPTIONS[1])) {
-            System.out.println("Wykonuję remove");
+            currentTaskList = removeFromArray(currentTaskList);
             showOptions();
             mainLoopOption(insert());
         } else if (choiceOption.equals(OPTIONS[2])) {
@@ -42,6 +44,7 @@ public class TaskManager {
             showOptions();
             mainLoopOption(insert());
         } else if (choiceOption.equals(OPTIONS[3])) {
+            getFileFromArray(currentTaskList, DATABASE_FILE);
             System.out.println(RED + "Bye bye :)");
         } else {
             System.out.println("Wrong method. Try again:");
@@ -52,9 +55,9 @@ public class TaskManager {
     }
 
     //  Czytam z pliku i tworzę tablicę/ Read from file and create array
-    private static String[][] getArrayFromFile(String fileLocalisation) {
+    private static String[][] getArrayFromFile(String dbFile) {
         String[][] taskList = new String[0][3];
-        Path path = Paths.get(fileLocalisation);
+        Path path = Paths.get(dbFile);
         int countRow = 0;
         if (Files.exists(path)) {
             try {
@@ -89,10 +92,23 @@ public class TaskManager {
         }
         taskRowArray[2] = scanner.nextLine();
 
-        return insertRow(taskList,taskList.length, taskRowArray);
+        return insertRow(taskList, taskList.length, taskRowArray);
     }
 
-    //        Wyświetla listę / Print list
+    // Usuwa podany wiersz z tablicy dwuwymiarowej / Removes the specified row from a two-dimensional array
+    private static String[][] removeFromArray(String[][] taskList) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the line number to delete task:");
+        while (!scanner.hasNextInt() || scanner.nextInt() < 0 || scanner.nextInt() > taskList.length - 1) {
+            scanner.nextLine();
+            System.out.println("There is no task with this number or the given value is not an integer");
+        }
+        int rowNumber = scanner.nextInt();
+
+        return removeRow(taskList, rowNumber);
+    }
+
+    //  Wyświetla listę / Print list
     private static void printTaskList(String[][] taskList) {
         for (int i = 0; i < taskList.length; i++) {
             System.out.print(i + ": ");
@@ -100,6 +116,30 @@ public class TaskManager {
                 System.out.print(taskList[i][j] + " ");
             }
             System.out.println();
+        }
+    }
+
+    //  Czytam z tabicy i zapisuję do pliku - komenda exit/ Read from array and write to the file - the exit command
+    public static void getFileFromArray(String[][] taskList, String dbFile) {
+        String strLine = "";
+        Path path = Paths.get(dbFile);
+        List<String> outList = new ArrayList<>();
+        for (int i = 0; i < taskList.length; i++) {
+            for (int j = 0; j < taskList[i].length; j++) {
+                if (j == taskList[i].length - 1 && i == taskList.length - 1) {
+                    strLine += taskList[i][j];
+                } else if (j < taskList[i].length - 1) {
+                    strLine += taskList[i][j] + ", ";
+                } else if (j == taskList[i].length - 1) {
+                    strLine += taskList[i][j] + "\n";
+                }
+            }
+        }
+        outList.add(strLine);
+        try {
+            Files.write(path, outList);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -116,7 +156,20 @@ public class TaskManager {
         return outArray;
     }
 
-    //    Pozwala wybrać opcję / Choice option
+    //  Usuwa wiersz z tablicy dwuwymiarowej /Removes a row from a two-dimensional array
+    public static String[][] removeRow(String[][] taskList, int rowToRemove) {
+        String[][] realCoppyArray = new String[taskList.length - 1][taskList[0].length];
+        for (int row = 0; row < taskList.length; row++) {
+            for (int column = 0; column < taskList[0].length; column++) {
+                if (row != rowToRemove) {
+                    realCoppyArray[row][column] = taskList[row][column];
+                }
+            }
+        }
+        return realCoppyArray;
+    }
+
+    //  Pozwala wybrać opcję / Choice option
     private static String insert() {
         Scanner scanner = new Scanner(System.in);
         String chosenOption = scanner.nextLine();
@@ -131,4 +184,7 @@ public class TaskManager {
         System.out.println(RESET + OPTIONS[2]);
         System.out.println(RESET + OPTIONS[3]);
     }
+
+
+
 }
