@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,10 +16,8 @@ public class TaskManager {
     final static String[] OPTIONS = {"add", "remove", "list", "exit"};
     final static String[] INFO_STR = {"Please select an option:"};
     final static String DATABASE_FILE = "src/main/java/pl/indexpz/taskmanager/tasks.csv";
-//    static String[][] currentTaskList = getArrayFromFile(DATABASE_FILE);
 
     public static void main(String[] args) {
-
         taskManager(DATABASE_FILE);
     }
 
@@ -27,58 +26,36 @@ public class TaskManager {
         mainLoopOption(currentTaskList(DATABASE_FILE));
     }
 
-    private static String[][] currentTaskList(String dbFile) {
-        return getArrayFromFile(DATABASE_FILE);
-    }
-
 
     //  Główna pętla z wyborem polecenia / Main loop with choisen option
     private static void mainLoopOption(String[][] currentTaskList) {
-        while (!insert().equals(OPTIONS[3])) {
-            showOptions();
-            insert();
-            if (insert().equals(OPTIONS[0])) {
-                System.out.println("Wykonuję add");
+//
+
+        String answer = insert();
+        while (!answer.equals(OPTIONS[3])) {
+
+            if (answer.equals(OPTIONS[0])) {
                 currentTaskList = addNewTask(currentTaskList);
+//                System.out.print(Arrays.toString(currentTaskList));
                 showOptions();
-                insert();
-            } else if (insert().equals(OPTIONS[1])) {
+                answer = insert();
+            } else if (answer.equals(OPTIONS[1])) {
                 currentTaskList = removeFromArray(currentTaskList);
                 showOptions();
-                insert();
-            } else if (insert().equals(OPTIONS[2])) {
+                answer = insert();
+            } else if (answer.equals(OPTIONS[2])) {
                 printTaskList(currentTaskList);
                 showOptions();
-                insert();
-            } else if (insert().equals(OPTIONS[2])) {
+                answer = insert();
+            } else if (answer.equals(OPTIONS[3])) {
                 getFileFromArray(currentTaskList, DATABASE_FILE);
                 System.out.println(RED + "Bye bye :)");
-            }else{
+            } else {
                 System.out.println("Wrong method. Try again:");
+                answer = insert();
             }
+
         }
-
-
-//        if (choiceOption.equals(OPTIONS[0])) {
-//            currentTaskList = addNewTask(currentTaskList);
-//            showOptions();
-//            mainLoopOption(insert(),currentTaskList(DATABASE_FILE));
-//        } else if (choiceOption.equals(OPTIONS[1])) {
-//            currentTaskList = removeFromArray(currentTaskList);
-//            showOptions();
-//            mainLoopOption(insert(),currentTaskList(DATABASE_FILE));
-//        } else if (choiceOption.equals(OPTIONS[2])) {
-//            printTaskList(currentTaskList);
-//            showOptions();
-//            mainLoopOption(insert(),currentTaskList(DATABASE_FILE));
-//        } else if (choiceOption.equals(OPTIONS[3])) {
-//            getFileFromArray(currentTaskList, DATABASE_FILE);
-//            System.out.println(RED + "Bye bye :)");
-//        } else {
-//            System.out.println("Wrong method. Try again:");
-//            mainLoopOption(insert(),currentTaskList(DATABASE_FILE));
-//
-//        }
 
     }
 
@@ -151,10 +128,9 @@ public class TaskManager {
         }
     }
 
-    //  Czytam z tabicy i zapisuję do pliku - komenda exit/ Read from array and write to the file - the exit command
+    //  Czyta z tabicy i zapisuję do pliku - komenda exit/ Read from array and write to the file - the exit command
     //  poprawione
     public static void getFileFromArray(String[][] taskList, String dbFile) {
-        String strLine = "";
         Path path = Paths.get(dbFile);
         List<String> outList = new ArrayList<>();
         for (int row = 0; row < taskList.length; row++) {
@@ -219,5 +195,11 @@ public class TaskManager {
         System.out.println(RESET + OPTIONS[2]);
         System.out.println(RESET + OPTIONS[3]);
     }
+
+    // Bieżaca tablica / current array
+    private static String[][] currentTaskList(String dbFile) {
+        return getArrayFromFile(DATABASE_FILE);
+    }
+
 
 }
