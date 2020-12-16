@@ -34,7 +34,7 @@ public class TaskManager {
 
     //  Główna pętla z wyborem polecenia / Main loop with choisen option
     private static void mainLoopOption(String[][] currentTaskList) {
-        while (insert().equals(OPTIONS[3])) {
+        while (!insert().equals(OPTIONS[3])) {
             showOptions();
             insert();
             if (insert().equals(OPTIONS[0])) {
