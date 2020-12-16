@@ -103,7 +103,7 @@ public class TaskManager {
         }
 
         int rowNumber = scanner.nextInt();
-        if(rowNumber<0 || rowNumber> taskList.length){
+        if (rowNumber < 0 || rowNumber > taskList.length) {
             System.out.println("There is no task with this number!");
             return taskList;
         }
@@ -122,27 +122,28 @@ public class TaskManager {
     }
 
     //  Czytam z tabicy i zapisuję do pliku - komenda exit/ Read from array and write to the file - the exit command
+    //  poprawione
     public static void getFileFromArray(String[][] taskList, String dbFile) {
         String strLine = "";
         Path path = Paths.get(dbFile);
         List<String> outList = new ArrayList<>();
-        for (int i = 0; i < taskList.length; i++) {
-            for (int j = 0; j < taskList[i].length; j++) {
-                if (j == taskList[i].length - 1 && i == taskList.length - 1) {
-                    strLine += taskList[i][j];
-                } else if (j < taskList[i].length - 1) {
-                    strLine += taskList[i][j] + ", ";
-                } else if (j == taskList[i].length - 1) {
-                    strLine += taskList[i][j] + "\n";
+        for (int row = 0; row < taskList.length; row++) {
+            String line = "";
+            for (int column = 0; column < taskList[row].length; column++) {
+                if (column == taskList[row].length - 1 ) {
+                    line += taskList[row][column];
+                }else{
+                    line += taskList[row][column] + ", ";
                 }
             }
+            outList.add(line);
+            try {
+                Files.write(path, outList);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        outList.add(strLine);
-        try {
-            Files.write(path, outList);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     // Dodawanie wiersza do tablicy dwuwymiarowej / Adding new row to array two dimensional
@@ -158,17 +159,17 @@ public class TaskManager {
         return outArray;
     }
 
+
     //  Usuwa wiersz z tablicy dwuwymiarowej /Removes a row from a two-dimensional array
+    //  poprawione
     public static String[][] removeRow(String[][] taskList, int rowToRemove) {
         rowToRemove = rowToRemove - 1;
         String[][] realCoppyArray = new String[taskList.length - 1][taskList[0].length];
         for (int row = 0; row < taskList.length; row++) {
-            for (int column = 0; column < taskList[0].length; column++) {
-                if (row < rowToRemove) {
-                    realCoppyArray[row][column] = taskList[row][column];
-                } else if (row > rowToRemove) {
-                    realCoppyArray[row - 1][column] = taskList[row][column];
-                }
+            if (row < rowToRemove) {
+                realCoppyArray[row] = taskList[row];
+            } else if (row > rowToRemove) {
+                realCoppyArray[row - 1] = taskList[row];
             }
         }
         return realCoppyArray;
