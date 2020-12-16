@@ -15,40 +15,70 @@ public class TaskManager {
     final static String[] OPTIONS = {"add", "remove", "list", "exit"};
     final static String[] INFO_STR = {"Please select an option:"};
     final static String DATABASE_FILE = "src/main/java/pl/indexpz/taskmanager/tasks.csv";
-    private static String[][] currentTaskList = getArrayFromFile(DATABASE_FILE);
+//    static String[][] currentTaskList = getArrayFromFile(DATABASE_FILE);
 
     public static void main(String[] args) {
+
         taskManager(DATABASE_FILE);
     }
 
     public static void taskManager(String databaseFile) {
         showOptions();
-        mainLoopOption(insert());
+        mainLoopOption(currentTaskList(DATABASE_FILE));
+    }
+
+    private static String[][] currentTaskList(String dbFile) {
+        return getArrayFromFile(DATABASE_FILE);
     }
 
 
     //  Główna pętla z wyborem polecenia / Main loop with choisen option
-    private static void mainLoopOption(String choiceOption) {
-        if (choiceOption.equals(OPTIONS[0])) {
-            currentTaskList = addNewTask(currentTaskList);
+    private static void mainLoopOption(String[][] currentTaskList) {
+        while (insert().equals(OPTIONS[3])) {
             showOptions();
-            mainLoopOption(insert());
-        } else if (choiceOption.equals(OPTIONS[1])) {
-            currentTaskList = removeFromArray(currentTaskList);
-            showOptions();
-            mainLoopOption(insert());
-        } else if (choiceOption.equals(OPTIONS[2])) {
-            printTaskList(currentTaskList);
-            showOptions();
-            mainLoopOption(insert());
-        } else if (choiceOption.equals(OPTIONS[3])) {
-            getFileFromArray(currentTaskList, DATABASE_FILE);
-            System.out.println(RED + "Bye bye :)");
-        } else {
-            System.out.println("Wrong method. Try again:");
-            mainLoopOption(insert());
-
+            insert();
+            if (insert().equals(OPTIONS[0])) {
+                System.out.println("Wykonuję add");
+                currentTaskList = addNewTask(currentTaskList);
+                showOptions();
+                insert();
+            } else if (insert().equals(OPTIONS[1])) {
+                currentTaskList = removeFromArray(currentTaskList);
+                showOptions();
+                insert();
+            } else if (insert().equals(OPTIONS[2])) {
+                printTaskList(currentTaskList);
+                showOptions();
+                insert();
+            } else if (insert().equals(OPTIONS[2])) {
+                getFileFromArray(currentTaskList, DATABASE_FILE);
+                System.out.println(RED + "Bye bye :)");
+            }else{
+                System.out.println("Wrong method. Try again:");
+            }
         }
+
+
+//        if (choiceOption.equals(OPTIONS[0])) {
+//            currentTaskList = addNewTask(currentTaskList);
+//            showOptions();
+//            mainLoopOption(insert(),currentTaskList(DATABASE_FILE));
+//        } else if (choiceOption.equals(OPTIONS[1])) {
+//            currentTaskList = removeFromArray(currentTaskList);
+//            showOptions();
+//            mainLoopOption(insert(),currentTaskList(DATABASE_FILE));
+//        } else if (choiceOption.equals(OPTIONS[2])) {
+//            printTaskList(currentTaskList);
+//            showOptions();
+//            mainLoopOption(insert(),currentTaskList(DATABASE_FILE));
+//        } else if (choiceOption.equals(OPTIONS[3])) {
+//            getFileFromArray(currentTaskList, DATABASE_FILE);
+//            System.out.println(RED + "Bye bye :)");
+//        } else {
+//            System.out.println("Wrong method. Try again:");
+//            mainLoopOption(insert(),currentTaskList(DATABASE_FILE));
+//
+//        }
 
     }
 
@@ -130,9 +160,9 @@ public class TaskManager {
         for (int row = 0; row < taskList.length; row++) {
             String line = "";
             for (int column = 0; column < taskList[row].length; column++) {
-                if (column == taskList[row].length - 1 ) {
+                if (column == taskList[row].length - 1) {
                     line += taskList[row][column];
-                }else{
+                } else {
                     line += taskList[row][column] + ", ";
                 }
             }

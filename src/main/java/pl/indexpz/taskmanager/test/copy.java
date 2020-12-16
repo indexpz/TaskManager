@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static pl.coderslab.ConsoleColors.RED;
+
 public class copy {
     public static void main(String[] args) {
 
@@ -34,4 +36,32 @@ public class copy {
             e.printStackTrace();
         }
     }
+
+
+
+    //  Główna pętla z wyborem polecenia / Main loop with choisen option
+//    private static void mainLoopOption(String choiceOption, String[][] currentTaskList) {
+//        if (choiceOption.equals(OPTIONS[0])) {
+//            currentTaskList = addNewTask(currentTaskList);
+//            showOptions();
+//            mainLoopOption(insert(),currentTaskList(DATABASE_FILE));
+//        } else if (choiceOption.equals(OPTIONS[1])) {
+//            currentTaskList = removeFromArray(currentTaskList);
+//            showOptions();
+//            mainLoopOption(insert(),currentTaskList(DATABASE_FILE));
+//        } else if (choiceOption.equals(OPTIONS[2])) {
+//            printTaskList(currentTaskList);
+//            showOptions();
+//            mainLoopOption(insert(),currentTaskList(DATABASE_FILE));
+//        } else if (choiceOption.equals(OPTIONS[3])) {
+//            getFileFromArray(currentTaskList, DATABASE_FILE);
+//            System.out.println(RED + "Bye bye :)");
+//        } else {
+//            System.out.println("Wrong method. Try again:");
+//            mainLoopOption(insert(),currentTaskList(DATABASE_FILE));
+//
+//        }
+
+//    }
+
 }
