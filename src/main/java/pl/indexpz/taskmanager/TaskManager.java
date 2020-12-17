@@ -138,13 +138,13 @@ public class TaskManager {
                 }
             }
             outList.add(line);
-            try {
-                Files.write(path, outList);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
 
+        }
+        try {
+            Files.write(path, outList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Dodawanie wiersza do tablicy dwuwymiarowej / Adding new row to array two dimensional
