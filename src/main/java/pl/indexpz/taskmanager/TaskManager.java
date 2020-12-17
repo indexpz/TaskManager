@@ -15,6 +15,8 @@ public class TaskManager {
     final static String[] OPTIONS = {"add", "remove", "list", "exit"};
     final static String[] INFO_STR = {"Please select an option:"};
     final static String DATABASE_FILE = "src/main/java/pl/indexpz/taskmanager/tasks.csv";
+    final static String[] HEADER = {"Tasks","Data","Is it important"};
+
 
     public static void main(String[] args) {
         taskManager();
@@ -42,15 +44,15 @@ public class TaskManager {
                 printTaskList(currentTaskList);
                 showOptions();
                 answer = insert();
-            }  else {
+            } else {
                 System.out.println("Wrong method. Try again:");
                 answer = insert();
             }
 
-        if (answer.equals(OPTIONS[3])) {
-            getFileFromArray(currentTaskList, DATABASE_FILE);
-            System.out.println(RED + "Bye bye :)");
-        }
+            if (answer.equals(OPTIONS[3])) {
+                getFileFromArray(currentTaskList, DATABASE_FILE);
+                System.out.println(RED + "Bye bye :)");
+            }
         }
 
     }
@@ -73,7 +75,6 @@ public class TaskManager {
         } else {
             System.out.println("File not exist");
         }
-//        printTaskList(taskList);
         return taskList;
     }
 
@@ -115,13 +116,36 @@ public class TaskManager {
 
     //  Wyświetla listę / Print list
     private static void printTaskList(String[][] taskList) {
+        int maxLenghtCell = maxLenghtTaskCell(taskList);
+        int lenghtCell = 0;
+        int intSpaceToAdd = maxLenghtCell - lenghtCell;
+        System.out.println(BLUE + "    "+ HEADER[0] + spaceToAdd(maxLenghtCell-HEADER[0].length()) + HEADER[1] +"         "+ HEADER[2]);
         for (int i = 0; i < taskList.length; i++) {
-            System.out.print((i + 1) + ": ");
+
+            if (i >= 0 && i < 9) {
+                System.out.print(RESET + " " + (i + 1) + ": ");
+            } else {
+                System.out.print(RESET + (i + 1) + ": ");
+            }
             for (int j = 0; j < taskList[i].length; j++) {
-                System.out.print(taskList[i][j] + " ");
+                lenghtCell =lenghtTaskCell(taskList, i,  0);
+                 intSpaceToAdd = maxLenghtCell - lenghtCell;
+                if (taskList[i][taskList[i].length - 1].equals("true")&& j==0) {
+                    System.out.print(RED + taskList[i][j] + spaceToAdd(intSpaceToAdd));
+
+                } else if(taskList[i][taskList[i].length - 1].equals("false")&& j==0) {
+                    System.out.print(CYAN + taskList[i][j] + spaceToAdd(intSpaceToAdd));
+                } else  if(j==1){
+                    System.out.print(taskList[i][j] +"   ");
+                }else{
+                    System.out.print(taskList[i][j]);
+                }
+
+
             }
             System.out.println();
         }
+        System.out.println();
     }
 
     //  Czyta z tabicy i zapisuję do pliku - komenda exit/ Read from array and write to the file - the exit command
@@ -195,4 +219,31 @@ public class TaskManager {
     }
 
 
+
+    // Formatowanie wyświetlania tabelii
+    private static int maxLenghtTaskCell(String[][] taskList) {
+        int max = 0;
+        for (int row = 0; row < taskList.length; row++) {
+            if (taskList[row][0].length() > max) {
+                max = taskList[row][0].length();
+            }
+        }
+        return max;
+    }
+
+    private static int lenghtTaskCell(String[][] taskList, int row, int column) {
+        int lenght = 0;
+        for (int i = 0; i < taskList.length; i++) {
+            lenght = taskList[row][column].length();
+        }
+        return lenght;
+    }
+
+    private static String spaceToAdd(int number){
+        String sum = "";
+        for (int i = 0; i <= number+2; i++) {
+            sum +=" ";
+        }
+        return sum;
+    }
 }
