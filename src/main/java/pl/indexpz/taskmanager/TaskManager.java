@@ -15,7 +15,7 @@ public class TaskManager {
     final static String[] OPTIONS = {"add", "remove", "list", "exit"};
     final static String[] INFO_STR = {"Please select an option:"};
     final static String DATABASE_FILE = "src/main/java/pl/indexpz/taskmanager/tasks.csv";
-    final static String[] HEADER = {"Tasks","Data","Is it important"};
+    final static String[] HEADER = {"Tasks", "Data", "Is it important"};
 
 
     public static void main(String[] args) {
@@ -75,6 +75,7 @@ public class TaskManager {
         } else {
             System.out.println("File not exist");
         }
+        taskList = commaFromFileToArray(taskList);
         return taskList;
     }
 
@@ -119,7 +120,7 @@ public class TaskManager {
         int maxLenghtCell = maxLenghtTaskCell(taskList);
         int lenghtCell = 0;
         int intSpaceToAdd = maxLenghtCell - lenghtCell;
-        System.out.println(BLUE + "    "+ HEADER[0] + spaceToAdd(maxLenghtCell-HEADER[0].length()) + HEADER[1] +"         "+ HEADER[2]);
+        System.out.println(BLUE + "    " + HEADER[0] + spaceToAdd(maxLenghtCell - HEADER[0].length()) + HEADER[1] + "         " + HEADER[2]);
         for (int i = 0; i < taskList.length; i++) {
 
             if (i >= 0 && i < 9) {
@@ -128,16 +129,16 @@ public class TaskManager {
                 System.out.print(RESET + (i + 1) + ": ");
             }
             for (int j = 0; j < taskList[i].length; j++) {
-                lenghtCell =lenghtTaskCell(taskList, i,  0);
-                 intSpaceToAdd = maxLenghtCell - lenghtCell;
-                if (taskList[i][taskList[i].length - 1].equals("true")&& j==0) {
+                lenghtCell = lenghtTaskCell(taskList, i, 0);
+                intSpaceToAdd = maxLenghtCell - lenghtCell;
+                if (taskList[i][taskList[i].length - 1].equals("true") && j == 0) {
                     System.out.print(RED + taskList[i][j] + spaceToAdd(intSpaceToAdd));
 
-                } else if(taskList[i][taskList[i].length - 1].equals("false")&& j==0) {
+                } else if (taskList[i][taskList[i].length - 1].equals("false") && j == 0) {
                     System.out.print(CYAN + taskList[i][j] + spaceToAdd(intSpaceToAdd));
-                } else  if(j==1){
-                    System.out.print(taskList[i][j] +"   ");
-                }else{
+                } else if (j == 1) {
+                    System.out.print(taskList[i][j] + "   ");
+                } else {
                     System.out.print(taskList[i][j]);
                 }
 
@@ -150,6 +151,7 @@ public class TaskManager {
 
     //  Czyta z tabicy i zapisuję do pliku - komenda exit/ Read from array and write to the file - the exit command
     public static void getFileFromArray(String[][] taskList, String dbFile) {
+        taskList = commaFromArrayToFile(taskList);
         Path path = Paths.get(dbFile);
         List<String> outList = new ArrayList<>();
         for (int row = 0; row < taskList.length; row++) {
@@ -160,7 +162,9 @@ public class TaskManager {
                 } else {
                     line += taskList[row][column] + ", ";
                 }
+
             }
+
             outList.add(line);
 
         }
@@ -219,8 +223,7 @@ public class TaskManager {
     }
 
 
-
-    // Formatowanie wyświetlania tabelii
+    // Formatowanie wyświetlania tabeli
     private static int maxLenghtTaskCell(String[][] taskList) {
         int max = 0;
         for (int row = 0; row < taskList.length; row++) {
@@ -239,11 +242,33 @@ public class TaskManager {
         return lenght;
     }
 
-    private static String spaceToAdd(int number){
+    private static String spaceToAdd(int number) {
         String sum = "";
-        for (int i = 0; i <= number+2; i++) {
-            sum +=" ";
+        for (int i = 0; i <= number + 2; i++) {
+            sum += " ";
         }
         return sum;
+    }
+
+
+    //    Konwertowanie przecinka przy zapisie do tabeli
+    private static String[][] commaFromFileToArray(String[][] tasklist) {
+        String[][] workingArray = new String[tasklist.length][tasklist[0].length];
+        for (int row = 0; row < tasklist.length; row++) {
+            for (int column = 0; column < tasklist[row].length; column++) {
+                workingArray[row][column] = tasklist[row][column].replaceAll("'comma'", ",");
+            }
+        }
+        return workingArray;
+    }
+    //    Konwertowanie przecinka przy zapisie do pliku na 'comma'
+    private static String[][] commaFromArrayToFile(String[][] tasklist) {
+        String[][] workingArray = new String[tasklist.length][tasklist[0].length];
+        for (int row = 0; row < tasklist.length; row++) {
+            for (int column = 0; column < tasklist[row].length; column++) {
+                workingArray[row][column] = tasklist[row][column].replaceAll(",", "'comma'");
+            }
+        }
+        return workingArray;
     }
 }
