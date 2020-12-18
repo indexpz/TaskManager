@@ -1,5 +1,8 @@
 package pl.indexpz.taskmanager;
 
+import org.apache.commons.validator.GenericValidator;
+import org.apache.commons.validator.routines.DateValidator;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +19,7 @@ public class TaskManager {
     final static String[] INFO_STR = {"Please select an option:"};
     final static String DATABASE_FILE = "src/main/java/pl/indexpz/taskmanager/tasks.csv";
     final static String[] HEADER = {"Tasks", "Data", "Is it important"};
+    final static String DATAPATTERN = "yyyy-MM-dd";
 
 
     public static void main(String[] args) {
@@ -82,13 +86,18 @@ public class TaskManager {
     // Dodawanie zadania / Add new task
     private static String[][] addNewTask(String[][] taskList) {
         String[] taskRowArray = new String[3];
-
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the subject of the task:");
         taskRowArray[0] = insert();
         System.out.println("Enter an end date (YYYY-MM-DD):");
-        taskRowArray[1] = insert();
+//        String date = scanner.nextLine();
+//        while (!GenericValidator.isDate(date, "yyyy-MM-dd", true)){
+//            scanner.nextLine();
+//            System.out.println("Wrong data pattern was given (YYYY-MM-DD)");
+//        }
+        taskRowArray[1] = scanner.nextLine();
         System.out.println("Is the task important?");
-        Scanner scanner = new Scanner(System.in);
+
         while (!scanner.hasNextBoolean()) {
             scanner.nextLine();
             System.out.println("Wrong parameter was given (true or false)");
@@ -261,6 +270,7 @@ public class TaskManager {
         }
         return workingArray;
     }
+
     //    Konwertowanie przecinka przy zapisie do pliku na 'comma'
     private static String[][] commaFromArrayToFile(String[][] tasklist) {
         String[][] workingArray = new String[tasklist.length][tasklist[0].length];
@@ -271,4 +281,7 @@ public class TaskManager {
         }
         return workingArray;
     }
+
+
+
 }
