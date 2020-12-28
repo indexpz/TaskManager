@@ -1,5 +1,6 @@
 package pl.indexpz.taskmanager;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.apache.commons.validator.routines.DateValidator;
 
@@ -7,7 +8,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -31,22 +37,29 @@ public class TaskManager {
         mainLoopOption(currentTaskList());
     }
 
+    //  Pokazuje opcje do wyboru / Show options to choice
+    private static void showOptions() {
+        System.out.println(BLUE + INFO_STR[0]);
+        System.out.println(RESET + OPTIONS[0]);
+        System.out.println(RESET + OPTIONS[1]);
+        System.out.println(RESET + OPTIONS[2]);
+        System.out.println(RESET + OPTIONS[3]);
+    }
 
     //  Główna pętla z wyborem polecenia / Main loop with choisen option
     private static void mainLoopOption(String[][] currentTaskList) {
         String answer = insert();
         while (!answer.equals(OPTIONS[3])) {
+            showOptions();
+
             if (answer.equals(OPTIONS[0])) {
                 currentTaskList = addNewTask(currentTaskList);
-                showOptions();
                 answer = insert();
             } else if (answer.equals(OPTIONS[1])) {
                 currentTaskList = removeFromArray(currentTaskList);
-                showOptions();
                 answer = insert();
             } else if (answer.equals(OPTIONS[2])) {
                 printTaskList(currentTaskList);
-                showOptions();
                 answer = insert();
             } else {
                 System.out.println("Wrong method. Try again:");
@@ -60,6 +73,7 @@ public class TaskManager {
         }
 
     }
+
 
     //  Czytam z pliku i tworzę tablicę/ Read from file and create array
     private static String[][] getArrayFromFile(String dbFile) {
@@ -89,15 +103,18 @@ public class TaskManager {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the subject of the task:");
         taskRowArray[0] = insert();
+
         System.out.println("Enter an end date (YYYY-MM-DD):");
-//        String date = scanner.nextLine();
-//        while (!GenericValidator.isDate(date, "yyyy-MM-dd", true)){
-//            scanner.nextLine();
+        String date = scanner.nextLine();
+//        while (!isValid(date)){
+//            date = scanner.nextLine();
 //            System.out.println("Wrong data pattern was given (YYYY-MM-DD)");
 //        }
-        taskRowArray[1] = scanner.nextLine();
-        System.out.println("Is the task important?");
 
+        taskRowArray[1] = date;
+
+
+        System.out.println("Is the task important?");
         while (!scanner.hasNextBoolean()) {
             scanner.nextLine();
             System.out.println("Wrong parameter was given (true or false)");
@@ -141,7 +158,7 @@ public class TaskManager {
                 lenghtCell = lenghtTaskCell(taskList, i, 0);
                 intSpaceToAdd = maxLenghtCell - lenghtCell;
                 if (taskList[i][taskList[i].length - 1].equals("true") && j == 0) {
-                    System.out.print(RED + taskList[i][j] + spaceToAdd(intSpaceToAdd));
+                    System.out.print(PURPLE + taskList[i][j] + spaceToAdd(intSpaceToAdd));
 
                 } else if (taskList[i][taskList[i].length - 1].equals("false") && j == 0) {
                     System.out.print(CYAN + taskList[i][j] + spaceToAdd(intSpaceToAdd));
@@ -185,14 +202,16 @@ public class TaskManager {
     }
 
     // Dodawanie wiersza do tablicy dwuwymiarowej / Adding new row to array two dimensional
-    private static String[][] insertRow(String[][] taskList, int row, String[] data) {
+    private static String[][] insertRow(String[][] taskList, int newRow, String[] data) {
         String[][] outArray = new String[taskList.length + 1][];
-        for (int i = 0; i < row; i++) {
-            outArray[i] = taskList[i];
+//        kopiujemy stare wiersze
+        for (int row = 0; row < newRow; row++) {
+            outArray[row] = taskList[row];
         }
-        outArray[row] = data;
-        for (int i = row + 1; i < outArray.length; i++) {
-            outArray[i] = taskList[i - 1];
+//        dodajemy nowy wiersz
+        outArray[newRow] = data;
+        for (int row = newRow + 1; row < outArray.length; row++) {
+            outArray[row] = taskList[row - 1];
         }
         return outArray;
     }
@@ -215,15 +234,6 @@ public class TaskManager {
     private static String insert() {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
-    }
-
-    //  Pokazuje opcje do wyboru / Show options to choice
-    private static void showOptions() {
-        System.out.println(BLUE + INFO_STR[0]);
-        System.out.println(RESET + OPTIONS[0]);
-        System.out.println(RESET + OPTIONS[1]);
-        System.out.println(RESET + OPTIONS[2]);
-        System.out.println(RESET + OPTIONS[3]);
     }
 
     // Bieżąca tablica / current array
@@ -282,6 +292,28 @@ public class TaskManager {
         return workingArray;
     }
 
+//public static Date validate(String value){
+//
+//}
 
+    public static boolean isValid(String date) {
+
+        boolean valid = false;
+
+        try {
+
+            // ResolverStyle.STRICT for 30, 31 days checking, and also leap year.
+            LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd").withResolverStyle(ResolverStyle.STRICT)
+            );
+
+            valid = true;
+
+        } catch (DateTimeParseException e) {
+            e.printStackTrace();
+            valid = false;
+        }
+
+        return valid;
+    }
 
 }
